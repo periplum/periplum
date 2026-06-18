@@ -1,0 +1,10 @@
+{
+  "items": [
+    { "name": "First stop", "date": "2020-01-01", "status": "first",
+      "placements": [ { "map": "earth", "lat": 48.8566, "lon": 2.3522, "label": "Paris",
+        "popup": { "Note": "Replace these with your own points" } } ] },
+    { "name": "Second stop", "date": "2021-06-15", "status": "second",
+      "placements": [ { "map": "earth", "lat": 40.7128, "lon": -74.0060, "label": "New York",
+        "popup": { "Note": "Each item can sit on one or more basemaps" } } ] }
+  ]
+}

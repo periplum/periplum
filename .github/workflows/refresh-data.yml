@@ -1,0 +1,37 @@
+name: Refresh data
+
+# Re-runs source.py (if present) and opens a PR if data.json changed.
+# Cadence: tune to how fast your dataset changes. Slow datasets (World Cup,
+# Olympics) should run AT MOST once a year; delete this file for static maps.
+on:
+  schedule:
+    - cron: "0 6 1 1 *"   # 06:00 UTC on 1 January, once a year
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Regenerate data.json from source.py
+        run: |
+          if [ -f source.py ]; then
+            pip install requests >/dev/null 2>&1 || true
+            python source.py > data.candidate.json && mv data.candidate.json data.json
+          else
+            echo "No source.py — static map, nothing to refresh."
+          fi
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Refresh data"
+          title: "Refresh data"
+          body: "Automated data refresh. Review the diff before merging."
+          branch: auto/refresh-data
+          delete-branch: true
