@@ -10,7 +10,7 @@ map — a chronological route of placed points on Earth, the Moon, Mars, or the 
    (Earth tiles by default; add a Moon/Mars/celestial basemap to get a basemap switcher).
 3. Edit **`data.json`** — your chronological `items`, each with one or more `placements`
    (`lat`/`lon` for tile/image basemaps, `ra`/`dec` for celestial). See the contract in the
-   [engine README](https://github.com/periplum/periplum#data-contract).
+   [engine README](https://github.com/periplum/periplum-core#data-contract).
 4. **Settings → Pages →** deploy from `main` / root. Your map is live at
    `https://OWNER.github.io/REPO/`.
 5. *(Optional, for evolving datasets)* add a `source.py` that prints the canonical JSON,
