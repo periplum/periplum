@@ -18,13 +18,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Bump pinned engine version to latest release
+      - name: Bump pinned engine version + recompute SRI hash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           latest=$(gh api repos/periplum/periplum-core/tags --jq '.[0].name')
           echo "Latest Periplum tag: $latest"
+          # Bump the @version in the CDN URL.
           sed -i "s#periplum/periplum-core@v[0-9][0-9.]*#periplum/periplum-core@${latest}#g" index.html
+          # Recompute the Subresource Integrity hash for the new version so the
+          # pinned hash never goes stale (a stale hash would block the script).
+          url="https://cdn.jsdelivr.net/gh/periplum/periplum-core@${latest}/dist/periplum.js"
+          hash="sha384-$(curl -fsSL "$url" | openssl dgst -sha384 -binary | openssl base64 -A)"
+          echo "New SRI: $hash"
+          sed -i -E "s#(periplum-core@${latest}/dist/periplum\.js\" integrity=\")[^\"]*#\1${hash}#g" index.html
+          grep -n "periplum-core@" index.html
       - uses: peter-evans/create-pull-request@v7
         with:
           commit-message: "Upgrade Periplum engine"
